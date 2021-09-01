@@ -30,6 +30,7 @@ public class IntegerBinarySearchTree implements BinarySearchTree<Integer> {
         this.root = insert(root, value, -1);
     }
 
+    //Recurse through tree to find a match
     @Override
     public BinaryNode<Integer> search(BinaryNode<Integer> node, Integer value) {
 
@@ -38,6 +39,7 @@ public class IntegerBinarySearchTree implements BinarySearchTree<Integer> {
                 : search(node.getLeftChild(), value);
     }
 
+    //Recurse through tree to insert a node
     private BinaryNode<Integer> insert(BinaryNode<Integer> node, Integer value, int parentDepth) {
         int depth = parentDepth + 1;
 
@@ -53,11 +55,13 @@ public class IntegerBinarySearchTree implements BinarySearchTree<Integer> {
                 : node.setRightChild(insert(node.getRightChild(), value, depth));
     }
 
+    //Return nodes at a given depth
     @Override
     public List<BinaryNode<Integer>> getNodesAtDepth(int depth) {
         return depthOfNodes.containsKey(depth) ? depthOfNodes.get(depth) : new ArrayList<>();
     }
 
+    //Return deepest nodes
     @Override
     public List<BinaryNode<Integer>> getDeepestNodes() {
         return getNodesAtDepth(this.depthOfNodes.size() - 1);
