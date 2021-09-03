@@ -1,6 +1,7 @@
 package org.tmeehan;
 
 import org.junit.Test;
+import org.tmeehan.bst.BinaryNode;
 import org.tmeehan.bst.BinarySearchTree;
 import org.tmeehan.bst.IntegerBinarySearchTree;
 
@@ -18,6 +19,7 @@ import static org.tmeehan.TestUtils.*;
  * Test Driven Development. Stub out tests to outline logic to be tested.
  */
 public class TestIntegerBinarySearchTree {
+    public static int[] BALANCED_TREE = {2, 1, 3};
 
     /**
      * No nodes added and assert empty list of nodes at any depth
@@ -64,18 +66,17 @@ public class TestIntegerBinarySearchTree {
     @Test
     public void testRootPlusChildrenFullBalanced() {
         IntegerBinarySearchTree tree = new IntegerBinarySearchTree();
-        int[] nodes = {2, 1, 3};
-        Arrays.stream(nodes).forEach(tree::insert);
+        Arrays.stream(BALANCED_TREE).forEach(tree::insert);
 
-        assertEquals((TWO * tree.getDeepestNodes().size()) - ONE, nodes.length);
+        assertEquals((TWO * tree.getDeepestNodes().size()) - ONE, BALANCED_TREE.length);
         assertEquals(tree.getNodesAtDepth(ZERO).size(), ONE);
-        assertEquals((TWO * tree.getNodesAtDepth(ONE).size()) - ONE, nodes.length);
-        assertEquals(tree.getRoot().getValue().intValue(), nodes[ZERO]);
-        assertEquals(tree.getRoot().getLeftChild().getValue().intValue(), nodes[ONE]);
-        assertEquals(tree.getRoot().getRightChild().getValue().intValue(), nodes[TWO]);
-        assertEquals(tree.search(tree.getRoot(), nodes[ZERO]), tree.getRoot());
-        assertEquals(tree.getRoot().getLeftChild(), tree.search(tree.getRoot(), nodes[ONE]));
-        assertEquals(tree.getRoot().getRightChild(), tree.search(tree.getRoot(), nodes[TWO]));
+        assertEquals((TWO * tree.getNodesAtDepth(ONE).size()) - ONE, BALANCED_TREE.length);
+        assertEquals(tree.getRoot().getValue().intValue(), BALANCED_TREE[ZERO]);
+        assertEquals(tree.getRoot().getLeftChild().getValue().intValue(), BALANCED_TREE[ONE]);
+        assertEquals(tree.getRoot().getRightChild().getValue().intValue(), BALANCED_TREE[TWO]);
+        assertEquals(tree.search(tree.getRoot(), BALANCED_TREE[ZERO]), tree.getRoot());
+        assertEquals(tree.getRoot().getLeftChild(), tree.search(tree.getRoot(), BALANCED_TREE[ONE]));
+        assertEquals(tree.getRoot().getRightChild(), tree.search(tree.getRoot(), BALANCED_TREE[TWO]));
     }
 
     /**
@@ -123,5 +124,35 @@ public class TestIntegerBinarySearchTree {
         assertEquals(tree.getDeepestNodes().size(), ONE);
         tree.getDeepestNodes().forEach(n -> assertEquals(n.getValue().intValue(), ZERO));
         tree.getDeepestNodes().forEach(n -> assertEquals(n.getDepth(), lastNum - ONE));
+    }
+
+    @Test
+    public void testPreOrderTraverse() {
+        IntegerBinarySearchTree tree = new IntegerBinarySearchTree();
+        Arrays.stream(BALANCED_TREE).forEach(tree::insert);
+        List<Integer> order = Arrays.stream(BALANCED_TREE).boxed().collect(Collectors.toList());
+        List<BinaryNode<Integer>> traverse = tree.preOrderTraversal(tree.getRoot());
+        assertEquals(traverse.stream()
+                .map(n -> n.getValue()).collect(Collectors.toList()), order);
+    }
+
+    @Test
+    public void testInOrderTraverse() {
+        IntegerBinarySearchTree tree = new IntegerBinarySearchTree();
+        Arrays.stream(BALANCED_TREE).forEach(tree::insert);
+        List<Integer> order = Arrays.stream(new int[]{1, 2, 3}).boxed().collect(Collectors.toList());
+        List<BinaryNode<Integer>> traverse = tree.inOrderTraversal(tree.getRoot());
+        assertEquals(traverse.stream()
+                .map(n -> n.getValue()).collect(Collectors.toList()), order);
+    }
+
+    @Test
+    public void testPostOrderTraverse() {
+        IntegerBinarySearchTree tree = new IntegerBinarySearchTree();
+        Arrays.stream(BALANCED_TREE).forEach(tree::insert);
+        List<Integer> order = Arrays.stream(new int[]{1, 3, 2}).boxed().collect(Collectors.toList());
+        List<BinaryNode<Integer>> traverse = tree.postOrderTraversal(tree.getRoot());
+        assertEquals(traverse.stream()
+                .map(n -> n.getValue()).collect(Collectors.toList()), order);
     }
 }
